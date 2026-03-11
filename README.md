@@ -4,7 +4,8 @@ Your personal job application assistant. Upload CVs, paste job descriptions, and
 
 **Now with Robust Document Processing & OCR support!**
 
-**Stack:** Next.js 14 · Supabase (Postgres) · Gemini 2.0 Flash · Tesseract.js · Sharp
+**Stack:** Next.js 14 · Supabase (Postgres) · Gemini 2.5 Flash · Tesseract.js · Sharp
+
 
 ---
 
