@@ -1,0 +1,49 @@
+{
+  "name": "@wizzle/applyiq",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@azure/cognitiveservices-computervision": "^8.2.0",
+    "@azure/ms-rest-azure-js": "^2.1.0",
+    "@google-cloud/vision": "^5.3.4",
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.43.2",
+    "axios": "^1.13.6",
+    "bull": "^4.16.5",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.2",
+    "lucide-react": "^0.378.0",
+    "mammoth": "^1.11.0",
+    "mongoose": "^9.3.0",
+    "next": "14.2.3",
+    "pdf-parse": "^2.4.5",
+    "pg": "^8.20.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-markdown": "^9.0.1",
+    "redis": "^5.11.0",
+    "sharp": "^0.34.5",
+    "tailwind-merge": "^2.3.0",
+    "tesseract.js": "^7.0.0",
+    "uuid": "^13.0.0",
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
