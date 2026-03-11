@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+
 import { api } from "@/lib/api-client";
 
 const Btn = ({ children, onClick, variant = "default", disabled, style = {} }) => {
@@ -25,6 +26,11 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
     const [suggesting, setSuggesting] = useState(false);
     const [suggestedId, setSuggestedId] = useState(null);
     const [jobConfirmed, setJobConfirmed] = useState(!!session.job_description);
+
+    useEffect(() => {
+        if (session.job_description && !jobConfirmed) setJobConfirmed(true);
+    }, [session.job_description]);
+
     const fileRef = useRef();
 
     const cvs = session.cvs || [];
@@ -34,10 +40,18 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
         const files = Array.from(e.target.files);
         setUploading(true);
         try {
+            let currentCvs = [...cvs];
             for (const file of files) {
                 const cv = await api.uploadCV(session.id, file);
                 if (cv.error) throw new Error(cv.error);
-                onUpdate({ cvs: [...cvs, cv] });
+
+                currentCvs = [...currentCvs, cv];
+                onUpdate({ cvs: currentCvs });
+
+                // If no CV is selected, auto-select the first one uploaded
+                if (!selectedCvName && !session.selected_cv_name && currentCvs.length === 1) {
+                    await selectCV(cv);
+                }
             }
         } catch (err) {
             console.error(err);
@@ -47,6 +61,7 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
         e.target.value = "";
     };
 
+
     const handleDeleteCV = async (e, cvId) => {
         e.stopPropagation();
         await api.deleteCV(session.id, cvId);
@@ -54,9 +69,11 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
     };
 
     const selectCV = async (cv) => {
+        if (!cv) return;
         await api.updateSession(session.id, { selected_cv_name: cv.name });
         onUpdate({ selected_cv_name: cv.name });
     };
+
 
     const confirmJob = async () => {
         if (!jobInput.trim()) return;
@@ -89,7 +106,8 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
         setSuggesting(false);
     };
 
-    const isReady = cvs.length > 0 && selectedCvName && jobConfirmed;
+    const isReady = cvs.length > 0 && jobConfirmed;
+
 
     const s = {
         section: { marginBottom: "32px" },
@@ -187,7 +205,8 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
                 <div style={{ ...s.card, display: "flex", alignItems: "center", gap: "16px", borderColor: "var(--gold-dim)", background: "rgba(201,168,76,0.05)", marginTop: "40px" }} className="fade-in">
                     <div style={{ flex: 1 }}>
                         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", color: "var(--text-bright)", fontWeight: 600 }}>Coach is ready</div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Analyzing with: {selectedCvName}</div>
+                        <div style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Analyzing with: {selectedCvName || cvs[0]?.name}</div>
+
                     </div>
                     <Btn variant="gold" onClick={onReady} style={{ padding: "12px 24px", fontSize: "0.88rem" }}>Start Coaching →</Btn>
                 </div>

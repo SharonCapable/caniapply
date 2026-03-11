@@ -13,12 +13,19 @@ export async function POST(req, { params }) {
         .eq("id", session_id)
         .single();
 
-    const { data: cv } = await supabaseServer
+    let cvQuery = supabaseServer
         .from("cvs")
         .select("text")
-        .eq("session_id", session_id)
-        .eq("name", session.selected_cv_name)
-        .single();
+        .eq("session_id", session_id);
+
+    if (session.selected_cv_name) {
+        cvQuery = cvQuery.eq("name", session.selected_cv_name);
+    } else {
+        cvQuery = cvQuery.order("created_at", { ascending: false }).limit(1);
+    }
+
+    const { data: cv } = await cvQuery.single();
+
 
     // 2. Build AI Prompt
     const context = buildCoachContext(cv?.text, session.job_description, session.company_insights);

@@ -21,7 +21,8 @@ export default function ChatPanel({ session, onUpdate }) {
         endRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, loading]);
 
-    const selectedCv = session.cvs?.find(c => c.name === session.selected_cv_name);
+    const selectedCv = session.cvs?.find(c => c.name === session.selected_cv_name) || session.cvs?.[0];
+
 
     const send = async (text) => {
         const msg = text || input.trim();
@@ -64,7 +65,8 @@ export default function ChatPanel({ session, onUpdate }) {
                 ))}
                 <div style={{ marginLeft: "auto", fontSize: "0.72rem", color: "var(--text-dim)", alignSelf: "center", display: "flex", alignItems: "center", gap: "6px" }}>
                     <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--gold)" }}></span>
-                    CV: <span style={{ color: "var(--text-bright)", fontWeight: 500 }}>{session.selected_cv_name}</span>
+                    CV: <span style={{ color: "var(--text-bright)", fontWeight: 500 }}>{session.selected_cv_name || session.cvs?.[0]?.name}</span>
+
                 </div>
             </div>
 

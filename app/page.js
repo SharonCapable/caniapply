@@ -7,12 +7,12 @@ import ChatPanel from "@/components/ChatPanel";
 import { api } from "@/lib/api-client";
 
 export default function Home() {
-  const [sessions,       setSessions]       = useState([]);
-  const [activeId,       setActiveId]       = useState(null);
-  const [activeSession,  setActiveSession]  = useState(null);
-  const [tab,            setTab]            = useState("setup");
-  const [sidebarOpen,    setSidebarOpen]    = useState(false);
-  const [loading,        setLoading]        = useState(false);
+  const [sessions, setSessions] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [activeSession, setActiveSession] = useState(null);
+  const [tab, setTab] = useState("setup");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     api.getSessions().then(setSessions).catch(console.error);
@@ -42,10 +42,21 @@ export default function Home() {
 
   const updateSession = (patch) => {
     setActiveSession(prev => ({ ...prev, ...patch }));
-    api.getSessions().then(setSessions).catch(() => {});
+    api.getSessions().then(setSessions).catch(() => { });
   };
 
-  const isReady = !!(activeSession?.cvs?.length && activeSession?.selected_cv_name && activeSession?.job_description);
+  // Auto-select first CV if none selected and only one exists
+  useEffect(() => {
+    if (activeSession && activeSession.cvs?.length === 1 && !activeSession.selected_cv_name) {
+      const name = activeSession.cvs[0].name;
+      updateSession({ selected_cv_name: name });
+      api.updateSession(activeSession.id, { selected_cv_name: name });
+    }
+  }, [activeSession?.id, activeSession?.cvs?.length, activeSession?.selected_cv_name]);
+
+
+  const isReady = !!(activeSession?.cvs?.length && activeSession?.job_description);
+
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg)", overflow: "hidden" }}>
