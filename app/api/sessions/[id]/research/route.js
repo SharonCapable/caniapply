@@ -1,21 +1,32 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabase";
+import { requireUser, requireOwnedSession } from "@/lib/supabase-server";
 import { researchCompany } from "@/lib/gemini";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req, { params }) {
+    const { supabase, user, error: authError } = await requireUser();
+    if (authError) return authError;
+
     const { id: session_id } = params;
-    const { companyName, jobTitle } = await req.json();
+    const { error: ownError } = await requireOwnedSession(supabase, session_id, user.id, "id");
+    if (ownError) return ownError;
+
+    const { companyName, jobTitle } = await req.json().catch(() => ({}));
+    if (!companyName?.trim()) {
+        return NextResponse.json({ error: "companyName is required" }, { status: 400 });
+    }
 
     try {
-        const insights = await researchCompany(companyName, jobTitle);
+        const { insights, grounded } = await researchCompany(companyName, jobTitle);
 
-        // Update session
-        await supabaseServer
+        await supabase
             .from("sessions")
-            .update({ company_insights: insights })
-            .eq("id", session_id);
+            .update({ company_insights: insights, company_name: companyName })
+            .eq("id", session_id)
+            .eq("user_id", user.id);
 
-        return NextResponse.json({ insights });
+        return NextResponse.json({ insights, grounded });
     } catch (err) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }

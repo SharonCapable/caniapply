@@ -13,6 +13,7 @@
     "@azure/ms-rest-azure-js": "^2.1.0",
     "@google-cloud/vision": "^5.3.4",
     "@google/generative-ai": "^0.24.1",
+    "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.43.2",
     "axios": "^1.13.6",
     "bull": "^4.16.5",

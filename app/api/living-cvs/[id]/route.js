@@ -3,38 +3,26 @@ import { requireUser } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 
-const PATCHABLE = ["title", "job_description", "company_name", "company_insights", "selected_cv_name"];
+// Only these are user-editable — a raw PATCH body must not be able to set user_id.
+const PATCHABLE = ["name", "is_pinned", "domain", "context_filter"];
 
-export async function GET(_, { params }) {
+// GET /api/living-cvs/[id] — full record, including generated_text
+export async function GET(req, { params }) {
   const { supabase, user, error: authError } = await requireUser();
   if (authError) return authError;
 
-  const { id } = params;
-
-  const { data: session, error: sErr } = await supabase
-    .from("sessions")
+  const { data, error } = await supabase
+    .from("living_cvs")
     .select("*")
-    .eq("id", id)
+    .eq("id", params.id)
     .eq("user_id", user.id)
     .single();
 
-  if (sErr || !session) return NextResponse.json({ error: "Session not found" }, { status: 404 });
-
-  const { data: cvs } = await supabase
-    .from("cvs")
-    .select("id, name, source, living_cv_id")
-    .eq("session_id", id)
-    .order("created_at", { ascending: true });
-
-  const { data: messages } = await supabase
-    .from("messages")
-    .select("role, content, created_at")
-    .eq("session_id", id)
-    .order("created_at", { ascending: true });
-
-  return NextResponse.json({ ...session, cvs: cvs || [], messages: messages || [] });
+  if (error) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(data);
 }
 
+// PATCH /api/living-cvs/[id] — rename / pin
 export async function PATCH(req, { params }) {
   const { supabase, user, error: authError } = await requireUser();
   if (authError) return authError;
@@ -49,7 +37,7 @@ export async function PATCH(req, { params }) {
   }
 
   const { data, error } = await supabase
-    .from("sessions")
+    .from("living_cvs")
     .update(patch)
     .eq("id", params.id)
     .eq("user_id", user.id)
@@ -57,16 +45,17 @@ export async function PATCH(req, { params }) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  if (!data) return NextResponse.json({ error: "Session not found" }, { status: 404 });
+  if (!data) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(data);
 }
 
-export async function DELETE(_, { params }) {
+// DELETE /api/living-cvs/[id]
+export async function DELETE(req, { params }) {
   const { supabase, user, error: authError } = await requireUser();
   if (authError) return authError;
 
   const { error } = await supabase
-    .from("sessions")
+    .from("living_cvs")
     .delete()
     .eq("id", params.id)
     .eq("user_id", user.id);

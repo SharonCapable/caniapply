@@ -1,49 +1,68 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabase";
+import { requireUser, requireOwnedSession } from "@/lib/supabase-server";
 import { generateResponse } from "@/lib/gemini";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req, { params }) {
+    const { supabase, user, error: authError } = await requireUser();
+    if (authError) return authError;
+
     const { id: session_id } = params;
+    const { session, error: ownError } = await requireOwnedSession(
+        supabase, session_id, user.id, "job_description"
+    );
+    if (ownError) return ownError;
 
-    // 1. Get Session & All CVs
-    const { data: session } = await supabaseServer
-        .from("sessions")
-        .select("job_description")
-        .eq("id", session_id)
-        .single();
+    if (!session.job_description?.trim()) {
+        return NextResponse.json({ error: "Add a job description first" }, { status: 400 });
+    }
 
-    const { data: cvs } = await supabaseServer
+    // Includes Living CVs attached to this session — they are ordinary `cvs` rows.
+    const { data: cvs } = await supabase
         .from("cvs")
-        .select("id, name, text")
-        .eq("session_id", session_id);
+        .select("id, name, text, source")
+        .eq("session_id", session_id)
+        .eq("user_id", user.id);
 
     if (!cvs?.length) return NextResponse.json({ error: "No CVs found" }, { status: 400 });
+    if (cvs.length === 1) {
+        await supabase.from("sessions")
+            .update({ selected_cv_name: cvs[0].name })
+            .eq("id", session_id).eq("user_id", user.id);
+        return NextResponse.json({ suggested_cv_id: cvs[0].id, suggested_cv_name: cvs[0].name });
+    }
 
-    // 2. Build Prompt
     const prompt = `Analyze the following job description and multiple CVs. Select the BEST CV for this role.
 
 JOB DESCRIPTION:
 ${session.job_description}
 
 CVS:
-${cvs.map((c, i) => `CV ${i + 1} [ID: ${c.id}, Name: ${c.name}]:\n${c.text}\n---`).join("\n")}
+${cvs.map((c, i) => `CV ${i + 1} [Name: ${c.name}]:\n${(c.text || "").slice(0, 8000)}\n---`).join("\n")}
 
 Respond ONLY with the name of the best matching CV. No explanation. Just the exact name as provided.`;
 
-    // 3. Generate Response
     try {
-        const suggested_cv_name = await generateResponse(prompt);
-        const suggested_cv = cvs.find(c => c.name.toLowerCase().includes(suggested_cv_name.toLowerCase()) || suggested_cv_name.toLowerCase().includes(c.name.toLowerCase()));
+        const raw = (await generateResponse(prompt)).trim();
+        const needle = raw.toLowerCase();
+        const suggested_cv =
+            cvs.find(c => c.name.toLowerCase() === needle) ||
+            cvs.find(c => needle.includes(c.name.toLowerCase())) ||
+            cvs.find(c => c.name.toLowerCase().includes(needle));
 
-        // Update session
         if (suggested_cv) {
-            await supabaseServer
+            await supabase
                 .from("sessions")
                 .update({ selected_cv_name: suggested_cv.name })
-                .eq("id", session_id);
+                .eq("id", session_id)
+                .eq("user_id", user.id);
         }
 
-        return NextResponse.json({ suggested_cv_id: suggested_cv?.id, suggested_cv_name: suggested_cv?.name });
+        return NextResponse.json({
+            suggested_cv_id: suggested_cv?.id || null,
+            suggested_cv_name: suggested_cv?.name || null,
+        });
     } catch (err) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
