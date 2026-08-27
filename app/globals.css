@@ -1,6 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@400;500;600&display=swap');
+/* Fonts are loaded by the <link> in app/layout.js (it has preconnect hints, so it
+   resolves faster than an @import here). Change the family in both places. */
 
 :root {
+  /* Typography. To bring back an editorial serif for headings and the wordmark,
+     point --font-display at it — nothing else needs to change. */
+  --font-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-sans);
+
   --bg: #09090b;
   --bg2: #121215;
   --bg3: #18181b;
@@ -20,9 +26,20 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text-bright);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Form controls do not inherit the page font by default, and several buttons in
+   this app never set one — without this they fall back to the browser default. */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 .fade-in {

@@ -18,7 +18,7 @@ export default function Logo({ size = "md" }) {
       {/* Wordmark */}
       <div style={{ display: "flex", alignItems: "baseline", gap: "1px" }}>
         <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
+          fontFamily: "var(--font-display)",
           fontSize: `${fontSize}px`,
           fontWeight: 600,
           color: "var(--text-bright)",
@@ -26,7 +26,7 @@ export default function Logo({ size = "md" }) {
           lineHeight: 1,
         }}>Apply</span>
         <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
+          fontFamily: "var(--font-display)",
           fontSize: `${fontSize}px`,
           fontWeight: 600,
           color: "var(--gold)",

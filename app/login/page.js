@@ -79,7 +79,7 @@ export default function LoginPage() {
           background: "#18181b", border: "1px solid #27272a", borderRadius: "16px", padding: "32px",
         }}>
           <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem",
+            fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 600,
             color: "#fafafa", marginBottom: "24px", textAlign: "center",
           }}>
             {mode === "login" ? "Welcome back" : "Create account"}

@@ -45,7 +45,7 @@ export default function Sidebar({ sessions, activeId, onSelect, onNew, onDelete,
             }}>
                 {/* Header */}
                 <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", fontWeight: 600, color: "var(--text-bright)", letterSpacing: "-0.01em" }}>ApplyIQ</span>
+                    <span style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", fontWeight: 600, color: "var(--text-bright)", letterSpacing: "-0.01em" }}>ApplyIQ</span>
                     <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-dim)", fontSize: "1.1rem", lineHeight: 1, cursor: "pointer" }}>✕</button>
                 </div>
 

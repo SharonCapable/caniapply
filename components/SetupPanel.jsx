@@ -128,7 +128,7 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
 
     return (
         <div style={{ maxWidth: "640px", margin: "0 auto", padding: "40px 24px" }} className="fade-in">
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", marginBottom: "32px", color: "var(--text-bright)" }}>Setup Application</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.8rem", marginBottom: "32px", color: "var(--text-bright)" }}>Setup Application</h2>
 
             {researchError && (
                 <div style={{
@@ -264,7 +264,7 @@ export default function SetupPanel({ session, onUpdate, onReady }) {
             {isReady && (
                 <div style={{ ...s.card, display: "flex", alignItems: "center", gap: "16px", borderColor: "var(--gold-dim)", background: "rgba(201,168,76,0.05)", marginTop: "40px" }} className="fade-in">
                     <div style={{ flex: 1 }}>
-                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", color: "var(--text-bright)", fontWeight: 600 }}>Coach is ready</div>
+                        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", color: "var(--text-bright)", fontWeight: 600 }}>Coach is ready</div>
                         <div style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Analyzing with: {selectedCvName || cvs[0]?.name}</div>
 
                     </div>

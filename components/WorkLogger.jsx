@@ -149,7 +149,7 @@ export default function WorkLogger() {
 
   return (
     <div style={{ maxWidth: "720px", margin: "0 auto", padding: "40px 24px" }} className="fade-in">
-      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", marginBottom: "6px", color: "var(--text-bright)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.8rem", marginBottom: "6px", color: "var(--text-bright)" }}>
         Work Log
       </h2>
       <p style={{ color: "var(--text-dim)", fontSize: "0.84rem", marginBottom: "32px" }}>

@@ -258,7 +258,7 @@ export default function LivingCVPanel({ onSelectCV, compact = false, selectedLiv
     <div style={{ maxWidth: compact ? "none" : "760px", margin: "0 auto", padding: compact ? "0" : "40px 24px" }} className="fade-in">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px", gap: "12px" }}>
         {!compact && (
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", color: "var(--text-bright)" }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.8rem", color: "var(--text-bright)" }}>
             Living CVs
           </h2>
         )}

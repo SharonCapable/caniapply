@@ -195,7 +195,7 @@ export default function SkillDashboard() {
 
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 24px" }} className="fade-in">
-      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", marginBottom: "6px", color: "var(--text-bright)" }}>
+      <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.8rem", marginBottom: "6px", color: "var(--text-bright)" }}>
         Skill Growth
       </h2>
       <p style={{ color: "var(--text-dim)", fontSize: "0.84rem", marginBottom: "28px" }}>
@@ -211,7 +211,7 @@ export default function SkillDashboard() {
             { label: "Growing fast", value: growingFast.length, color: "#c9a84c" },
           ].map(stat => (
             <div key={stat.label} style={{ background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 18px" }}>
-              <div style={{ fontSize: "1.6rem", fontFamily: "'Cormorant Garamond', serif", color: stat.color, fontWeight: 600 }}>{stat.value}</div>
+              <div style={{ fontSize: "1.6rem", fontFamily: "var(--font-display)", color: stat.color, fontWeight: 600 }}>{stat.value}</div>
               <div style={{ fontSize: "0.72rem", color: "var(--text-dim)", marginTop: "2px" }}>{stat.label}</div>
             </div>
           ))}

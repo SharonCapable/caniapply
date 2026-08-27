@@ -74,7 +74,7 @@ export default function ChatPanel({ session, onUpdate }) {
             <div style={{ flex: 1, overflowY: "auto", padding: "24px", display: "flex", flexDirection: "column", gap: "18px" }}>
                 {messages.length === 0 && (
                     <div style={{ textAlign: "center", padding: "60px 0", color: "var(--text-dim)" }} className="fade-in">
-                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.25rem", color: "var(--text-bright)", marginBottom: "10px", fontWeight: 600 }}>
+                        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "var(--text-bright)", marginBottom: "10px", fontWeight: 600 }}>
                             Your coach is ready
                         </div>
                         <div style={{ fontSize: "0.82rem", lineHeight: 1.6, maxWidth: "300px", margin: "0 auto" }}>
